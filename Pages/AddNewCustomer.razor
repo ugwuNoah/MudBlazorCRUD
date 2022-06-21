@@ -1,0 +1,49 @@
+﻿@page "/addnewcustomer"
+@using MudBlazorCRUD3.Entities
+@inject MudBlazorCRUD3.Services.ICustomerService customerService
+@inject MudBlazor.ISnackbar snackBar
+@inject NavigationManager NavManager
+
+
+
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Add Customers</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTextField @bind-Value="customer.FirstName" Label="First Name" Variant="Variant.Text" Margin="Margin.Normal" Required="true"></MudTextField>
+        <MudTextField @bind-Value="customer.LastName" Label="Last Name" Variant="Variant.Text" Margin="Margin.Normal" Required="true"></MudTextField>
+        <MudTextField @bind-Value="customer.PhoneNumber" Label="Phone Number" Variant="Variant.Text" Margin="Margin.Normal" Required="true"></MudTextField>
+        <br />
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Save Customer</MudButton>
+    </MudCardContent>
+</MudCard>
+
+
+
+
+@code{
+    private Customer customer = new Customer();
+    private List<Customer> customers = new List<Customer>();
+    protected override async Task OnInitializedAsync()
+    {
+        GetCustomers();
+    }
+    private List<Customer> GetCustomers()
+    {
+        customers = customerService.GetCustomers();
+        return customers;
+    }
+
+    private void Save()
+    {
+        customerService.SaveCustomer(customer);
+        customer = new Customer();
+        snackBar.Add("Customer Saved.", Severity.Success);
+        GetCustomers();
+        NavManager.NavigateTo("/");
+    }
+   
+}
